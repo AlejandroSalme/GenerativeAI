@@ -12,3 +12,20 @@ This project aims to build a first aproach of a Frequently Asked Questions (FAQ)
 - Non-generative QA + Text-to-Speech (TTS) system: Similar to the first aproach transforming the output answer into speech.
 
 - Generative QA + RAG (Retrieval-Augmentation) system: Utilizes a pre-trained language model (davinci-003) and retrieval augmented generation (RAG) approach, to answer user queries, conditioning the answer to our documents info.
+
+
+## Prerequisites
+
+Make sure you have the following dependencies installed:
+
+- pandas
+- requests
+- textwrap
+- beautifulsoup4
+- haystack
+- text2speech
+- soundfile
+- IPython
+- textwrap
+- getpass
+- re
