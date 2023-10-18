@@ -1,4 +1,4 @@
-## Frequently Asked Questions (FAQ) Answering System [[code]]() 
+## Frequently Asked Questions (FAQ) Answering System [[code]](https://github.com/AlejandroSalme/GenerativeAI/blob/master/FAQ_Answering_System/FAQ_Answering_System.ipynb) 
 
 ![image title](https://img.shields.io/badge/Python-3.9-purple.svg) ![Image title](https://img.shields.io/badge/Haystack-1.22.0-green.svg) ![Image title](https://img.shields.io/badge/BeautifulSoup-4.12.2-blue.svg) ![Image title](https://img.shields.io/badge/Pandas-2.1.1-red.svg)  
 
