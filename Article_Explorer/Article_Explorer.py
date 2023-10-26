@@ -228,7 +228,8 @@ def set_session_components():
 
 def main():
     # Page title
-    st.set_page_config(page_title='Article exploration App')
+    st.set_page_config(page_title='Article exploration App (Streamlit + Haystack)',
+                       page_icon='🔍')
     st.title('Article exploration App')
 
     # File upload and OpenAI API key
