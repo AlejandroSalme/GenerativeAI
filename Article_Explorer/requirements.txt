@@ -1,4 +1,3 @@
-torchvision
-farm-haystack
+farm-haystack[inference]
 streamlit
 openai
