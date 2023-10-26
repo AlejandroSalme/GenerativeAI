@@ -1,3 +1,4 @@
 farm-haystack[inference]
+farm-haystack[pdf]
 streamlit
 openai
