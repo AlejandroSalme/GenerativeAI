@@ -1,6 +1,7 @@
 from haystack.nodes import PreProcessor, PromptTemplate, PromptNode, PDFToTextConverter, AnswerParser
 from haystack.nodes.prompt.invocation_layer.handlers import TokenStreamingHandler
 from haystack.document_stores import InMemoryDocumentStore
+import haystack
 import streamlit as st
 import tempfile
 import openai
@@ -124,7 +125,7 @@ def get_questions(questions):
     
     return q_list
 
-def generate_output(name, template, prompt_node, past_questions):
+def generate_output(name, template, prompt_node, is_summary):
     """
     Creates a summary or five questions/answers for the uploaded file.
 
@@ -132,7 +133,7 @@ def generate_output(name, template, prompt_node, past_questions):
         name: summary or questions
         template: prompt to be used
         prompt_node: haystack node
-        past_questions: past generated questions
+        is_summary: generate summary or questions boolean
     
     Return 
         response: model output
@@ -146,13 +147,13 @@ def generate_output(name, template, prompt_node, past_questions):
 
             response = ''
 
-            if past_questions is None: #Sumary generation
+            if is_summary: #Sumary generation
                 response = prompt_node.prompt(prompt_template=template,
                                         documents=st.session_state.document_store.get_all_documents())[0].answer
             else: #Question generation
                 response = prompt_node.prompt(prompt_template=template,
                                                 documents=st.session_state.document_store.get_all_documents(),
-                                                past_generated_questions=past_questions)[0].answer
+                                                past_generated_questions=st.session_state.past_questions)[0].answer
             container.empty()
             container.write(response)
 
@@ -253,7 +254,7 @@ def main():
 
             st.session_state.last_uploaded_file = uploaded_file.name
             st.session_state.summary = ''
-            st.session_state.questions = []
+            st.session_state.past_questions = []
         
         if is_valid_api_key(openai_api_key):
             
@@ -265,24 +266,31 @@ def main():
             )       
 
             is_summary_generated = st.session_state.summary != ''
-            is_questions_generated = len(st.session_state.questions) != 0
+            is_questions_generated = len(st.session_state.past_questions) != 0
 
             if not is_summary_generated:
                 #Summary
-                summary = generate_output('Summary', st.session_state.summarization_template, prompt_node, None)
+                try:
+                    summary = generate_output('Summary', st.session_state.summarization_template, prompt_node, True)
 
-                store_message('assistant', 'Summary:\n\n\n' + summary)
-                st.session_state.summary = summary
+                    store_message('assistant', 'Summary:\n\n\n' + summary)
+                    st.session_state.summary = summary
+                    
+                except haystack.errors.OpenAIRateLimitError as e:
+                    new_chat_message('assistant', 'OpenAI rate limit error', None, False)
 
             if  not is_questions_generated:
                 #Questions
-                questions = generate_output('Questions', st.session_state.qgeneration_template, st.session_state.questions)
-            
-                question_list = get_questions(questions)
-                store_message('assistant', 'Questions:\n\n\n' + questions)
-                st.session_state.questions.append(question_list)
-                print(question_list)
-        
+                try:
+                    questions = generate_output('Questions', st.session_state.qgeneration_template, prompt_node, False)
+                
+                    question_list = get_questions(questions)
+                    store_message('assistant', 'Questions:\n\n\n' + questions)
+                    st.session_state.past_questions.append(question_list)
+
+                except haystack.errors.OpenAIRateLimitError as e:
+                    new_chat_message('assistant', 'OpenAI rate limit error', None, False)
+
             # User input
             if prompt := st.chat_input("Ask me something"):
 
@@ -293,10 +301,14 @@ def main():
                     message_placeholder = st.empty()
                     st.session_state.custom_handler.__set_container__(message_placeholder)
 
-                    response = prompt_node.prompt(prompt_template=st.session_state.qanswering_template, 
-                                                  query=prompt, 
-                                                  documents=st.session_state.document_store.get_all_documents())[0].answer
-                    store_message('assistant', response)
+                    try:
+                        response = prompt_node.prompt(prompt_template=st.session_state.qanswering_template, 
+                                                    query=prompt, 
+                                                    documents=st.session_state.document_store.get_all_documents())[0].answer
+                        store_message('assistant', response)
+
+                    except haystack.errors.OpenAIRateLimitError as e:
+                        new_chat_message('assistant', 'OpenAI rate limit error', None, False)
 
         elif openai_api_key != '':
             new_chat_message('assistant', 'OpenAI API Key is not valid', None, False)
