@@ -1,3 +1,4 @@
+torchvision
 farm-haystack
 streamlit
 openai
