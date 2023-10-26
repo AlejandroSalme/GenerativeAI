@@ -1,3 +1,4 @@
 farm-haystack[inference]
 streamlit
 openai
+pdftotext
