@@ -1,4 +1,4 @@
-## Article exploration App (Streamlit + Haystack) [[code]]() 
+## Article exploration App (Streamlit + Haystack) [[code]](https://github.com/AlejandroSalme/GenerativeAI/blob/master/Article_Explorer/Article_Explorer.py) 
 
 ![image title](https://img.shields.io/badge/Python-3.9-purple.svg) ![Image title](https://img.shields.io/badge/Haystack-1.22.0-green.svg) ![Image title](https://img.shields.io/badge/Streamlit-1.27.2-red.svg) ![Image title](https://img.shields.io/badge/OpenAI-0.28.1-blue.svg)
 

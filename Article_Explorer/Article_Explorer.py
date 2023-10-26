@@ -236,7 +236,7 @@ def main():
         uploaded_file = st.file_uploader("Select an article: ", type=['pdf'])
         openai_api_key = st.text_input("OpenAI API Key", key="openai_api_key", type="password")
         
-        "[View the source code]()"
+        "[View the source code](https://github.com/AlejandroSalme/GenerativeAI/blob/master/Article_Explorer/Article_Explorer.py)"
 
     set_session_components()
 
