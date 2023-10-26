@@ -99,7 +99,7 @@ def store_doc(uploaded_file):
     with open(temp_path, "wb") as f:
         f.write(uploaded_file.getvalue())
 
-    converter = PDFToTextConverter(remove_numeric_tables=True, multiprocessing=False)
+    converter = PDFToTextConverter(remove_numeric_tables=True)
     doc_text = converter.convert(file_path=temp_path, meta=None)[0]
 
     doc_processed = st.session_state.preprocessor.process([doc_text])
